@@ -31,7 +31,7 @@ contract Registry is Owned {
     }
 
     function registerMembership(bytes32 name) payable {
-        if (memberships[msg.sender] != 0) revert(); //seems like we should shrow exeption, to not let proposal finish successfully
+        if (memberships[msg.sender] != 0) revert();
         if (membershipRegistrationFee > 0 && msg.value < membershipRegistrationFee) revert();
         memberships[msg.sender] = name;
     }

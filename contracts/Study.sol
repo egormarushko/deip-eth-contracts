@@ -30,7 +30,7 @@ contract Study {
     string public name;
     uint public studyId;
     address public membershipAddress;
-    //Payment[] payments;
+    Payment[] payments;
 
     uint constant FundsExpirationPeriod = 100 days;
     
@@ -256,7 +256,9 @@ contract Study {
             liability.balance = 0;       
             liability.accomplished = true; 
         }
-        if (!token.transfer(liability.beneficiary, amount)) revert();
+        if (!token.transfer(liability.beneficiary, amount)) 
+            revert();
+        payments.push(Payment(liabilityId,amount,liability.beneficiary, now));
     }
 
     struct StudyFundsDonation{
@@ -269,15 +271,13 @@ contract Study {
         mapping(address => bool) containsBeneficiary;
         mapping(uint => bool) containsRequestId;
     }
-
-    /*
+    
     struct Payment {
-        uint paymentId;
         uint liabilityId;
         uint amount;
         address payee;
         uint date;
-    } */
+    }
 
     modifier onlyMembership{ if (msg.sender != address(membershipAddress)) revert(); _; }
 }
