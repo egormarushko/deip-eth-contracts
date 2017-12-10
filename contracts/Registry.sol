@@ -8,15 +8,17 @@ import './ERC20.sol';
  */
 contract Registry is Owned {
 
-    mapping(address => address) studies;
+    mapping(address => address) public studies;
 
-    mapping(address => bytes32) memberships;
+    mapping(address => bytes32) public memberships;
+
+    mapping(bytes32 => address) public uniqMembershipNames;
 
     uint public studyRegistrationFee;
 
     uint public membershipRegistrationFee;
 
-    ERC20 token;
+    ERC20 public token;
 
     function Registry(address _token, uint _membershipRegistrationFee, uint _studyRegistrationFee) public {
         studyRegistrationFee = _studyRegistrationFee;
@@ -24,27 +26,29 @@ contract Registry is Owned {
         token = ERC20(_token);
     }
 
-    function registerStudy(address study) payable {
-        if (memberships[msg.sender] == 0) revert();
-        if (studyRegistrationFee > 0 && msg.value < studyRegistrationFee) revert();
+    function registerStudy(address study) public payable {
+        require(memberships[msg.sender] != 0);
+        require(studyRegistrationFee == 0 || msg.value >= studyRegistrationFee);
         studies[study] = msg.sender;
     }
 
-    function registerMembership(bytes32 name) payable {
-        if (memberships[msg.sender] != 0) revert();
-        if (membershipRegistrationFee > 0 && msg.value < membershipRegistrationFee) revert();
+    function registerMembership(bytes32 name) public payable {
+        require(memberships[msg.sender] == 0); 
+        require(membershipRegistrationFee == 0 || msg.value >= membershipRegistrationFee);
+        require(uniqMembershipNames[name] == address(0));
         memberships[msg.sender] = name;
+        uniqMembershipNames[name] = msg.sender;
     }
 
-    function changeStudyRegistrationFee(uint fee) onlyOwner {
+    function changeStudyRegistrationFee(uint fee) public onlyOwner {
         studyRegistrationFee = fee;
     }
 
-    function changeMembershipRegistrationFee(uint fee) onlyOwner {
+    function changeMembershipRegistrationFee(uint fee) public onlyOwner {
         membershipRegistrationFee = fee;
     }
 
-    function withdraw(uint amount) onlyOwner payable returns (bool) {
+    function withdraw(uint amount) public onlyOwner payable returns (bool) {
         return this.owner().send(amount);
     }
 }
