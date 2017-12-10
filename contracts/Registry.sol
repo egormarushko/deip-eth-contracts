@@ -18,7 +18,7 @@ contract Registry is Owned {
 
     ERC20 token;
 
-    function Registry(address _token, uint _membershipRegistrationFee, uint _studyRegistrationFee) {
+    function Registry(address _token, uint _membershipRegistrationFee, uint _studyRegistrationFee) public {
         studyRegistrationFee = _studyRegistrationFee;
         membershipRegistrationFee = _membershipRegistrationFee;
         token = ERC20(_token);
