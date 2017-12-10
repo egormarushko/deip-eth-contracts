@@ -13,7 +13,7 @@ contract TestStudy {
 
     function beforeEach() {
         _membership = new Membership(DeployedAddresses.DeipToken(), address(_registry));
-        _registry = new Registry(0, 0);
+        _registry = new Registry(0, 0, 0);
     }
 
     function testStudyInitialization() {
