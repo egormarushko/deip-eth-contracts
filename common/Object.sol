@@ -5,7 +5,7 @@ import './Owned.sol';
  * @title Generic owned destroyable contract
  */
 contract Object is Owned {
-    function Object() {
+    function Object() public {
         owner  = msg.sender;
     }
 }

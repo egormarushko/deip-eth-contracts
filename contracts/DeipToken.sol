@@ -6,7 +6,7 @@ import './StudyAbstract.sol';
 contract DeipToken is Token {
 
     function DeipToken()
-             Token("DEIP", "DEIP", 9, 100000000000000000)
+             Token("DEIP", "DEIP", 9, 100000000000000000) public
     {
     }
 }

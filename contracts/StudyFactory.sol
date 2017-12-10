@@ -4,7 +4,7 @@ import './Study.sol';
 import './StudyAbstract.sol';
 
 library StudyFactory {
-    function createStudy(uint studyId, string name, address token) returns(StudyInterface study){
+    function createStudy(uint studyId, string name, address token) public returns(StudyInterface study){
         study = StudyInterface(new Study(studyId, name, msg.sender, token));
     }
 }

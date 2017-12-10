@@ -34,7 +34,7 @@ contract Study {
 
     uint constant FundsExpirationPeriod = 100 days;
     
-    function Study(uint _studyId, string _name, address _membershipAddress, address _token) {
+    function Study(uint _studyId, string _name, address _membershipAddress, address _token) public {
         studyId = _studyId;
         name = _name;
         membershipAddress = _membershipAddress;
@@ -72,7 +72,7 @@ contract Study {
         bool accomplished; // is layability accomplished and payment made
     }
 
-    function makeRequest(address beneficiary, uint amount, uint period, uint startDate, uint times) onlyMembership returns (uint id){
+    function makeRequest(address beneficiary, uint amount, uint period, uint startDate, uint times) public onlyMembership returns (uint id){
         id = requests.length++;
         StudyFundsRequest r = requests[id];
         r.requestId = id;
@@ -87,7 +87,7 @@ contract Study {
         totalRequsted += amount;
     }
 
-    function proceedRequest(uint requestId, uint[] donationsIds, bool allowFreeAllocation) onlyMembership {
+    function proceedRequest(uint requestId, uint[] donationsIds, bool allowFreeAllocation) public onlyMembership {
         if (!requests[requestId].termsAccepted) revert();
         if (requests[requestId].expirationDate < now) revert();
         if (requests[requestId].aborted) revert();
@@ -154,7 +154,7 @@ contract Study {
 
     uint[] validDonations;
 
-    function filterValidDonations(uint[] donationIds, uint requestId, address beneficiary)
+    function filterValidDonations(uint[] donationIds, uint requestId, address beneficiary) public
     {
         validDonations.length = 0;
         for (uint i=0; i< donationIds.length; i++)
@@ -165,24 +165,24 @@ contract Study {
         }
     }
 
-    function validateDontaionForRequest(uint donationId, uint requestId, address beneficiary) constant returns(bool)
+    function validateDontaionForRequest(uint donationId, uint requestId, address beneficiary) public constant returns(bool)
     {   
         return donations[donationId].containsBeneficiary[beneficiary] || donations[donationId].containsRequestId[requestId];
     }
 
-    function abortRequest(uint requestId) onlyMembership {
+    function abortRequest(uint requestId) public onlyMembership {
         if (requests[requestId].executed) revert();
         requests[requestId].aborted = true;
         totalRequsted -= requests[requestId].amount;
     }
 
-    function acceptTerms(uint requestId) {
+    function acceptTerms(uint requestId) public {
         if (requests[requestId].beneficiary != msg.sender) revert();
         if (requests[requestId].termsAccepted) revert();
         requests[requestId].termsAccepted = true;
     }
 
-    function depositFunds(address sponsor, uint amount, address[] beneficiaries, uint[] requests) {
+    function depositFunds(address sponsor, uint amount, address[] beneficiaries, uint[] requests) public {
         if (!token.transferFrom(sponsor, address(this), amount)) revert();
         uint donationId = donations.length;
         donations.length++;
@@ -214,12 +214,12 @@ contract Study {
      * @notice This make refund to msg.sender address only if donation is not applicable anymore)
      * @throws if study doesn't exists or it's not enough of funds on sender address
      */
-    function refundDonation(uint donationId)
+    function refundDonation(uint donationId) public
     {
         if (isFreeAllocationDonation(donationId)) revert();
     }
 
-    function isFreeAllocationDonation(uint donationId) constant returns(bool)
+    function isFreeAllocationDonation(uint donationId) public constant returns(bool)
     {
         return donations[donationId].beneficiaries.length == 0 && donations[donationId].requests.length == 0;
     }
@@ -228,7 +228,7 @@ contract Study {
      * @dev Receives (earnt money) payment for specific study
      * @param _study: address of donated study
      */
-    function redeemReward(uint liabilityId) {
+    function redeemReward(uint liabilityId) public {
         var liability = liabilities[liabilityId];
         if (liability.accomplished) revert();
         if (liability.startDate < now) revert();

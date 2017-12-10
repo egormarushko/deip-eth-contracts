@@ -6,12 +6,12 @@ import './StudyAbstract.sol';
 import './StudyFactory.sol';
 
 contract RegistryInterface {
-    function registerStudy(address study);
-    function registerMembership(bytes32 name);
+    function registerStudy(address study) public;
+    function registerMembership(bytes32 name) public;
 }
 
 contract StudyFactoryInterface {
-    function createStudy(uint studyId, string name, address token) returns(address study);
+    function createStudy(uint studyId, string name, address token) public returns(address study);
 }
 
 contract Membership {
@@ -30,7 +30,7 @@ contract Membership {
 
 
     /* First time setup */
-    function Membership(address deipTokenAddress, address registryAddress, string _name, address[] members) payable {
+    function Membership(address deipTokenAddress, address registryAddress, string _name, address[] members) public payable {
         membershipToken = new MembershipToken();
         name = _name;
         deipToken = DeipToken(deipTokenAddress);
@@ -287,7 +287,7 @@ contract Membership {
         }
     }
 
-    function () {
+    function () public {
         revert();
     }
 }

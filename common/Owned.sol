@@ -13,11 +13,11 @@ contract Owned {
      * @dev Delegate contract to another person
      * @param _owner New owner address 
      */
-    function setOwner(address _owner) onlyOwner
+    function setOwner(address _owner) public onlyOwner
     { owner = _owner; }
 
     /**
      * @dev Owner check modifier
      */
-    modifier onlyOwner { if (msg.sender != owner) throw; _; }
+    modifier onlyOwner { if (msg.sender != owner) revert(); _; }
 }

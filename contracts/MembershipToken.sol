@@ -21,17 +21,17 @@ contract MembershipToken is Object {
 
   mapping(address => uint) public memberSince;
 
- function balanceOf(address _owner) constant returns (uint256)
+ function balanceOf(address _owner) public constant returns (uint256)
     { return balances[_owner]; }
 
- function isMember(address _owner) constant returns (bool)
+ function isMember(address _owner) public constant returns (bool)
     { return balances[_owner] > 0; }
 
-  function MembershipToken() {
+  function MembershipToken() public {
     totalSupply = 0;
   }
 
- function addMember(address target) onlyOwner {
+ function addMember(address target) onlyOwner public {
     if (isMember(target)) revert();
     balances[target] = InitialMemberBalance;
     memberSince[target] = now;
@@ -39,7 +39,7 @@ contract MembershipToken is Object {
     MemberAdded(target);
  }
 
- function removeMember(address target) onlyOwner {
+ function removeMember(address target) onlyOwner public {
     if (!isMember(target)) revert();
     memberSince[target] = 0;
     totalSupply = totalSupply.sub(balances[target]);
@@ -47,7 +47,7 @@ contract MembershipToken is Object {
     MemberRemoved(target);
  }
 
-  function () {
+  function () public {
       revert();
   }
 }
